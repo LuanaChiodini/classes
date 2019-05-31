@@ -1,27 +1,40 @@
-class Cliente():
-	def __init__(self, cpf, nome, telefone):
-		self.cpf = cpf
-		self.nome = cpf
-		self.telefone = telefone
+import peewee, os
 
-class Animal():
-	def __init__(self, nome, especie, data_nascimento):
-		self.nome = nome
-		self.especie = especie
-		self.data_nascimento = data_nascimento
+db = peewee.SqliteDatabase("animal.db")
 
-class Produto():
-	def __init__(self, nome, preco, cod_produto):
-		self.nome = nome
-		self.preco = preco
-		self.cod_produto = cod_produto
+class Animal(peewee.Model):
+	nome_dono = peewee.CharField()
+	tipo_animal = peewee.CharField()
+	raca = peewee.CharField()
 
-class Consulta():
-	def __init__():
-		def __init__(self, data, hora, finalidade, cliente, animal, produto):
-			self.data = data
-			self.hora = hora
-			self.finalidade = finalidade 
-			self.cliente = cliente
-			self.animal = animal
-			self.produto = produto
+	class Meta():
+		database = db
+
+		def __str__(self):
+			return self.tipo_animal, self.raca, self.nome_dono
+
+class Consulta(peewee.Model):
+	data = peewee.CharField()
+	servidor = peewee.CharField()
+	horario = peewee.CharField()
+	animal = peewee.ForeignKeyField(Animal)
+	confirma = peewee.CharField()
+	myID = peewee.CharField()
+
+	class Meta():
+		database = db
+
+	def __str__(self):
+		return self.servico, self.data, self.horario, self.confirma, self.myID, str(self.animal)
+
+if __name__ == "__main__":
+	arq = "animal.db"
+	if os.path.exists(arq)
+		os.remove(arq)
+
+	try:
+		db.connect()
+		db.create_tables([Animal, Consulta])
+
+	except peewee.OperationError as erro:
+		print("erro ao criar as tabelas: "+str(erro))
