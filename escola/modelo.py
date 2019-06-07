@@ -1,41 +1,30 @@
 import os
 from peewee import *
 
-arq = "animal.db"
+arq = "aluno.db"
 db = SqliteDatabase(arq)
 
 class BaseModel(Model):
 	class Meta():
 		database = db
+class Aluno(BaseModel):
+	nome = CharField()
 
-class Animal(BaseModel):
-	nome_dono = CharField()
-	tipo_animal = CharField()
-	raca = CharField()
-	nome_animal = CharField()
+class Disciplina(BaseModel):
+	nome = CharField()
 
-		def __str__(self):
-			return self.tipo_animal, self.raca, self.nome_dono, self.nome_animal
-
-class Consulta(BaseModel):
-	data = CharField()
-	servidor = CharField()
-	horario = CharField()
-	animal = ForeignKeyField(Animal)
-	confirma = CharField()
-	myID = CharField()
-
-	def __str__(self):
-		return self.servico, self.data, self.horario, self.confirma, self.myID, str(self.animal)
+class AlunoDisciplina(BaseModel):
+	aluno = ForeignKeyField(Aluno)
+	disciplina = ForeignKeyField(Disciplina)
 
 if __name__ == "__main__":
-	arq = "animal.db"
+	arq = "aluno.db"
 	if os.path.exists(arq):
 		os.remove(arq)
 
 	try:
 		db.connect()
-		db.create_tables([Animal, Consulta])
+		db.create_tables([Aluno, Disciplina, AlunoDisciplina])
 
 	except OperationError as erro:
 		print("erro ao criar as tabelas: "+str(erro))

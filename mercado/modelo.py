@@ -1,3 +1,13 @@
+import os
+from peewee import *
+
+arq = "compras.db"
+db = SqliteDatabase(arq)
+
+class BaseModel(Model):
+	class Meta():
+		database = db
+
 class Produto():
 	def __init__(self, codigo, preco):
 		self.codigo = codigo 
