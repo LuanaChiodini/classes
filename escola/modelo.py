@@ -12,10 +12,7 @@ class Aluno(BaseModel):
 
 class Disciplina(BaseModel):
 	nome = CharField()
-
-class AlunoDisciplina(BaseModel):
-	aluno = ForeignKeyField(Aluno)
-	disciplina = ForeignKeyField(Disciplina)
+	alunos = ManyToManyField(Aluno)
 
 if __name__ == "__main__":
 	arq = "aluno.db"
@@ -24,19 +21,25 @@ if __name__ == "__main__":
 
 	try:
 		db.connect()
-		db.create_tables([Aluno, Disciplina, AlunoDisciplina])
+		db.create_tables([Aluno, Disciplina, Aluno.disciplinas.get_through_model()])
 
 	except OperationError as erro:
 		print("erro ao criar as tabelas: "+str(erro))
 
-	print("teste do animal")
-	a1 = Animal(nome_dono="Gustavo", tipo_animal="cachorro", raca="linguicinha", nome_animal="Sarchixa")
-	a1.save()
-	print(a1)
-	print("teste da consulta")
-	c1 = Consulta(data="2019-06-05", servico="Consulta", horario="14:00", animal=a1, confirma="sim", myID="3425576687sdf436")
-	
+	joao = Aluno.create(nome="João")
+	ingles = Disciplina.create(nome="Inglês")
+	espanhol = Disciplina.create(nome="Espanhol")
+	joao.disciplinas.add([ingles, espanhol])
 
-	todos = Animal.select()
-	for i in todos:
-		print(i)
+	maria = Aluno.create(nome="Maria")
+	espanhol.alunos.add(maria)
+
+	todos = Disciplina.select()
+	for disciplina in todos:
+		print("quem cursa a disciplina:" + disciplina.nome)
+		for aluno in disciplina.alunos:
+			print(aluno.nome)
+
+	print("disciplinas de joão:")
+	for disciplina in joao.disciplinas:
+		print(disciplina.nome)
